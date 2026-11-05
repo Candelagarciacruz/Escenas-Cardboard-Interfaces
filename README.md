@@ -1,3 +1,5 @@
+<img width="608" height="281" alt="1000092409 (3) (1)" src="https://github.com/user-attachments/assets/68c857fb-ec36-49a1-8ec8-2cecfa3755c1" />
+
 # Escenas-Cardboard-Interfaces
 
 ## Descripción
@@ -34,6 +36,7 @@ Controla el marcador de puntuación flotante (Canvas en World Space usando TextM
 ## Resultados
 A continuación, se muestra el resultado obtenido tras ejecutar la apk en el móvil (android en mi caso):
 
-<img width="262" height="120" alt="1000092409 (1)" src="https://github.com/user-attachments/assets/dd56fd6a-a3dd-469b-8a17-763766255596" />
+<img width="608" height="281" alt="1000092409 (3) (1)" src="https://github.com/user-attachments/assets/8e890a6d-16c9-4ca1-bc0b-e2592331a724" />
+
 
 *Candela García Cruz*
