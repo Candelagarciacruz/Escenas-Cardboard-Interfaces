@@ -1,5 +1,3 @@
-<img width="608" height="281" alt="1000092409 (3) (1)" src="https://github.com/user-attachments/assets/68c857fb-ec36-49a1-8ec8-2cecfa3755c1" />
-
 # Escenas-Cardboard-Interfaces
 
 ## Descripción
