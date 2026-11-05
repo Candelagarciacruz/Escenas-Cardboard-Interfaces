@@ -1,104 +1,39 @@
 # Escenas-Cardboard-Interfaces
 
-## 1. Descripción del proyecto
+## Descripción
+En esta práctica se ha desarrollado una experiencia de Realidad Virtual desarrollada en Unity utilizando el **Google Cardboard XR Plugin**. El objetivo principal es la recolección de objetos mediante la interacción visual (Gaze Interaction), incluyendo una mecánica especial de "imán" para atraer todos los objetos restantes mirando un objeto determinado.
 
-El proyecto consiste en una escena de realidad virtual desarrollada en Unity para dispositivos Android utilizando Google Cardboard.
+## Mecánicas Principales
+1. **Recolección por mirada:** Al mirar fijamente un objeto durante 2 segundos, este es recolectado (desaparece).
+2. **Imán (Magnetismo):** Al mirar fijamente un objeto determinado (una caja), todos los objetos no recolectados del mapa vuelan hacia el jugador.
+3. **Marcador UI:** Un panel de texto flotante (World Space) que muestra el progreso de recolección en tiempo real.
 
-La escena utiliza el paquete **Idyllic Fantasy Nature** de la Asset Store, que proporciona el entorno y los elementos del escenario.
+## Estructura de Scripts
+A continuación se detallan los scripts principales que hacen funcionar el proyecto:
 
-El objetivo de la práctica es crear una experiencia en la que el jugador pueda observar el entorno mediante unas gafas de realidad virtual y recoger objetos utilizando la mirada.
+### 1. `GazeInteraction.cs`
+Se encarga de detectar hacia dónde está mirando el usuario. Está asociado a la cámara principal (y única).
+- **Funcionamiento:** Lanza un rayo (`Raycast`) desde el centro de la cámara. Si el rayo choca con un objeto interactivo (recolectable o imán), inicia un temporizador.
+- **Interacción:** Si el jugador mantiene la mirada durante el tiempo establecido (2 segundos), activa la función correspondiente del objeto mirado.
 
-Además, se ha incorporado un objeto especial, un imán, que permite atraer los objetos recolectables hacia el jugador al seleccionarlo con la mirada.
+### 2. `Collectible.cs`
+Controla el comportamiento individual de cada objeto recolectable, haciendo que desaparezca una vez que se haya mirado al objeto durante 2 segundos.
+- **Recolección Normal (`Collect`):** Hace el objeto invisible e intocable al instante (apagando su `Renderer` y `Collider`). 
+- **Recolección Magnética (`Magnetize`):** Apaga la colisión del objeto e inicia una Corrutina (`GoToPlayer`) que mueve el objeto suavemente hacia la cámara del jugador usando `Vector3.MoveTowards` antes de destruirlo.
 
-## 2. Herramientas utilizadas
+### 3. `RecoverCollected.cs`
+Es el script asignado al objeto que va a recolectar (dirigir hacia el jugador) los recolectables restantes (la caja).
+- **Funcionamiento:** Cuando el jugador lo activa con la mirada, busca automáticamente todos los objetos en la escena que tengan el script `Collectible.cs` (usando `FindObjectsByType`).
+- **Acción:** Llama a la función `Magnetize()` de todos esos objetos para que vuelen hacia el jugador a la vez y avisa al sistema de puntuación para mostrar el mensaje de victoria.
 
-- Unity 6.
-- Google Cardboard XR Plugin para Unity.
-- Paquete Idyllic Fantasy Nature de la Asset Store.
-- Android como plataforma de destino.
-- C# para los scripts de interacción.
+### 4. `TextManager.cs`
+Controla el marcador de puntuación flotante (Canvas en World Space usando TextMeshPro).
+- **Funcionamiento:** Al arrancar, cuenta cuántos objetos recolectables hay en el mapa.
+- **Actualización:** Tiene funciones públicas (`AddObject` y `ShowAllCollected`) a las que llaman los demás scripts para actualizar el texto en pantalla (ej. "Recogidos: 3 / 8").
+  
+## Resultados
+A continuación, se muestra el resultado obtenido tras ejecutar la apk en el móvil (android en mi caso):
 
-## 3. Funcionamiento
+<img width="262" height="120" alt="1000092409 (1)" src="https://github.com/user-attachments/assets/dd56fd6a-a3dd-469b-8a17-763766255596" />
 
-El jugador observa la escena a través de la cámara de Cardboard.
-
-La interacción se realiza mediante un sistema de detección por raycast, que permite comprobar qué objeto está mirando el jugador.
-
-Cuando el jugador mantiene la mirada sobre un objeto interactivo durante un tiempo determinado:
-
-- **Objetos recolectables:** se desplazan automáticamente hacia la cámara del jugador y desaparecen al llegar a ella.
-- **Imán:** al seleccionarlo, atrae todos los objetos recolectables de la escena hacia el jugador.
-
-El tiempo necesario para seleccionar un objeto se puede modificar desde el Inspector de Unity.
-
-## 4. Scripts utilizados
-
-### GazeInteraction.cs
-
-Se encarga de detectar los objetos que está mirando el jugador mediante un raycast desde la cámara.
-
-Si el jugador mantiene la mirada durante el tiempo establecido, comprueba si el objeto tiene el componente `Collectible` o `Magnet` y ejecuta la acción correspondiente.
-
-### Collectible.cs
-
-Controla el comportamiento de los objetos recolectables.
-
-Cuando se llama a su función `Recoger()`, el objeto comienza a desplazarse hacia la cámara del jugador. Al llegar a ella, se destruye.
-
-### Magnet.cs
-
-Controla el objeto especial que funciona como imán.
-
-Cuando se activa, busca todos los objetos que contienen el componente `Collectible` y ejecuta su función `Recoger()`, haciendo que todos se desplacen hacia el jugador.
-
-## 5. Configuración de Google Cardboard
-
-Se ha utilizado el paquete Google Cardboard XR Plugin para integrar la realidad virtual en Unity.
-
-El proyecto se ha configurado para Android y se ha incorporado la cámara de Cardboard a la escena del entorno.
-
-En el archivo `CardboardStartup.cs` se ha realizado la modificación indicada en el enunciado para evitar que se ejecute una llamada de inicialización dentro del Editor:
-
-```csharp
-#if !UNITY_EDITOR
-    Api.UpdateScreenParams();
-#endif
-```
-
-También se ha configurado el sistema de entrada de Unity como `Both` para permitir la compatibilidad con scripts que utilizan el sistema de entrada antiguo y el nuevo.
-
-## 6. Configuración de los objetos
-
-Para que los objetos puedan detectarse mediante la mirada:
-
-- Los objetos recolectables deben tener un componente `Collectible`.
-- El objeto imán debe tener un componente `Magnet`.
-- Los objetos interactivos deben disponer de un `Collider`.
-- La cámara utilizada para la interacción debe tener el tag `MainCamera`.
-- El script `GazeInteraction` debe estar añadido a la cámara del jugador.
-
-## 7. Instalación y ejecución
-
-1. Abrir el proyecto en Unity.
-2. Comprobar que Google Cardboard XR Plugin está instalado.
-3. Seleccionar Android como plataforma de compilación.
-4. Conectar un dispositivo Android compatible.
-5. Generar el archivo APK desde Unity.
-6. Instalar el APK en el dispositivo móvil.
-7. Introducir el teléfono en unas gafas compatibles con Google Cardboard para probar la experiencia.
-
-## 8. Archivos incluidos en la entrega
-
-La entrega incluye:
-
-- El archivo APK generado para Android.
-- Los scripts C# utilizados en la práctica.
-- Este archivo README.md.
-
-## 9. Conclusión
-
-Con esta práctica se ha desarrollado una pequeña experiencia de realidad virtual utilizando Google Cardboard y Unity.
-
-Se han trabajado conceptos como la configuración de una cámara de realidad virtual, la detección de objetos mediante raycast, el uso de colliders y la programación de interacciones mediante scripts en C#.
-
-El resultado busca permitir al jugador interactuar con los elementos de la escena utilizando únicamente la mirada.
+*Candela García Cruz*
