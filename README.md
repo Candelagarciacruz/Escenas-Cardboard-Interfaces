@@ -34,7 +34,8 @@ Controla el marcador de puntuación flotante (Canvas en World Space usando TextM
 ## Resultados
 A continuación, se muestra el resultado obtenido tras ejecutar la apk en el móvil (android en mi caso):
 
-<img width="608" height="281" alt="1000092409 (3) (1)" src="https://github.com/user-attachments/assets/8e890a6d-16c9-4ca1-bc0b-e2592331a724" />
+<img width="262" height="120" alt="1000092409 (1)" src="https://github.com/user-attachments/assets/6233373e-cc17-45af-8f21-01b1efd993af" />
+
 
 
 *Candela García Cruz*
